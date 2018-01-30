@@ -1,0 +1,67 @@
+09/02/2002 - Bug in searchbackwards prevented an item being ever found.
+	Fixed. Version incremented to 0.5.10
+09/02/2002 - Previous fix brought a number of new bugs to light - 
+	centred around a bug which put an infinite loop into the 
+	data structure links. This happened immediately after a suspected
+	poisoner was detected and alerted. Fixed - instead of removing
+	details from the data structure, we're now resetting replies/requests
+	and the timeout, which makes more sense anyway. Version incremented to 
+	0.5.9.
+06/02/2002 - Fixed bug which made program check MACs in incorrect 
+	circumstances, resulting in literally hundreds of false positives. 
+	Version incremented to 0.5.8.
+06/02/2002 - Fixed bug which made the program always give an error the first
+	time an ARP reply was seen, if check_mac_changes is enabled. Impending
+	deadlines mean this will almost certainly be the submitted version.
+	Updated most of the documentation, and changed copyright notice
+	to reflect current status.
+	Version incremented to 0.5.7.
+04/02/2002 - Changed so that as soon as an alert is sent, details are reset. 
+	Also made alerts for unusual numbers of ARP replies more informative.
+	This makes the number and content of alerts somewhat saner.
+	Version incremented to 0.5.6.
+28/01/2002 - Fixed bug introduced in 0.5.4 which prevented MAC details
+	from being stored. Version incremented to 0.5.5.
+15/01/2002 - Fixed bug in checktimeouts() in audit.c which caused a segfault
+	if details at either end of the list were due for timeout. Also fixed
+	typo in antidote.h which prevented compilation in systems which
+	do not define ETH_ALEN.
+
+	Also prevented storing of MACs when we do not know the target MAC.
+	Changed version to 0.5.4
+14/01/2002 - Found in handlereply - it calls populateipspace, which always 
+	fills the detail space with the senders details. Amended 
+	handledata.c with populateipspacereq, populateipspacerep and
+	turned populateipspace into a wrapper. Changed antidote.c to
+	avoid using these wrappers where possible for speed reasons.
+	
+	Also fixed bug where broadcast ARPs cause an alert - ARP requests are
+	no longer checked for matching MACs.
+	Changed version to 0.5.3
+08/01/2002 - Found bug in BSD port - the program appears to be treating
+	MAC addresses as 12 bytes long (should be 6). ETH_ALEN is defined
+	as 6 by linux/if_ether in linux, and if undefined, is defined
+	as 6 in antidote.h, so something there is messing up.	
+06/01/2002 - Sorted a number of potential portability issues, mainly with
+	use of preprocessor directives. Remaining issues are in 
+	src/porting.txt. Version number incremented to 0.5.2
+05/01/2002 - Changed to_ms in pcap_loop call (in antidote.c) from -1 to 10. 
+	This allows use of older versions of libpcap (certainly works with
+	0.5). Also checked portability to FreeBSD - all fine. Version number 
+	incremented to 0.5.1.
+04/01/2002 - Put in ifndef ETH_ALEN to increase portability.
+21/12/2001 - Implemented support for short command line options. You can now 
+	specify a different config file.
+	 - Also fully implemented support for a configuration file.
+20/12/2001 - Cleared up a number of memory leaks.
+19/12/2001 - Completed SMTP support - now checks that the message was sent 
+	properly.
+18/12/2001 - Full support for options - just set the relevant part of the
+	options structure. Also completed autoconf setup.
+17/12/2001 - Embryonic SMTP support - will connect to a mail server and 
+	send an email in theory, but does not check mail server's replies.
+16/12/2001 - Tried to get it to compile with autoconf - info pages give
+	typically excellent reference information, and typically lousy 
+	tutoring.
+
+Sorry, no logs prior to 16/12/2001 

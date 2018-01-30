@@ -1,0 +1,7 @@
+AUTHORS
+=======
+
+The code which calls libpcap is based on code taken from Martin Casado's 
+libpcap tutorial.
+
+All other code was written by James Cort, antidote@whitepost.org.uk

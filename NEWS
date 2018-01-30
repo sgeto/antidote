@@ -1,0 +1,35 @@
+ANTIDOTE
+========
+
+A simple implementation to detect and alert the administrator to some of the
+more simple elements of suspect behaviour on a network, especially
+any that may be indicitave of ARP poisoning.
+
+
+Notes Specific to This Release
+==============================
+
+This is version 0.5.10.
+
+This is the first public release of Antidote. It's already been through about
+as much testing as I can realistically subject it to, but it has had little
+in terms of peer review.
+
+It should be pretty stable - tests so far have revealed no memory
+leaks, corruption or crashing.
+
+This release supports the following features:
+
+* Report suspicious activity via email and syslog
+* Check for and alert of MAC:IP mapping changes.
+* Configurable threshold to define when ARP behaviour appears suspicious
+
+While there are currently no known bugs, please note that Antidote comes with
+NO WARRANTY WHATSOEVER.
+
+Licensing
+=========
+
+Antidote is released under the GNU General Public License.
+
+  - James Cort,  antidote@whitepost.org.uk

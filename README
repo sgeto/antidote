@@ -1,0 +1,169 @@
+ANTIDOTE
+========
+
+A simple implementation to detect and alert the administrator to some of the
+more simple elements of suspect behaviour on a network, especially
+any that may be indicitave of ARP poisoning.
+
+
+PURPOSE
+=======
+
+There are a number of network security tools, both commercial and free.
+Most are true "swiss-army-knife" style tools which claim to (in theory) spot
+all kinds of suspect behaviour at 100 paces. Unfortunately, this level of
+functionality has the drawback that to be used effectively many of them require
+a lot of careful configuration and tuning. Since all networks are slightly
+different, in each case it's a different set of security worries which will
+face the administrator. This means that the (already overburdened) 
+administrator seldom has the time to find out how to install the tool, much
+less how to configure it appropriately. To compound matters, the increased use
+of Ethernet switches increases security at one level by preventing packet
+sniffing, while at the same time making efficient detection of other suspect 
+behaviour extremely hard (without managed switches, which can be expensive).
+
+Antidote does not claim to solve all these problems. Instead, Antidote is a 
+revival of the traditional (and all too often forgotten) Unix idea of "make
+your tool do one thing, but make sure it does it well".
+
+Antidote will effectively detect some basic patterns of behaviour which may
+indicate machines using ARP poisoning to effect a "man in the middle" attack.
+
+Specifically, Antidote can:
+
+	- Detect unusually large numbers of ARP replies (suggestive of an ARP 
+	poisoning attack).
+	- Detect sudden IP:MAC address changes (suggestive of either an ARP 
+	poisoning attack, or possibly two machines being given the same IP
+	address).
+	- Detect anomalies between an ARP packet and the Ethernet frame
+	it is encapsulated in (suggestive of clumsy packet forging).
+	- Detect unusually large numbers of ARP requests without corresponding
+	replies (suggests that a machine is becoming confused regarding IP 
+	addresses on the network, which sometimes happens when ARP poisoning is
+	used, or that network reliability is unusually low).
+
+Antidote can be configured to operate in promiscuous mode (in which case one 
+machine can watch an entire subnet if it is hubbed, or a switch can be 
+configured to mirror every packet to the machine running Antidote). In non-
+promiscuous mode, antidote will still spot every ARP packet destined for the
+machine it is on, however, functionality is greatly reduced. If you have a 
+small network it could conceivably be installed on every machine with minimal
+changes to the configuration file.
+
+Antidote alerts the operator by writing to the system log file (via syslogd) 
+and (optionally) sending email via SMTP.
+
+
+ANTIDOTE.CFG
+============
+
+The antidote configuration file normally resides in /etc/antidote.cfg.
+
+It has the following format:
+
+- Comments begin with # and continue to the end of the line.
+- Options are specified in the form [option name] = [option value]
+- Any amount of whitespace may occur between the option name, the equals sign 
+and the option value.
+- Option specifications are separated by whitespace.
+- Option names are not case sensitive.
+- Option values are never enclosed by anything.
+- Option values which are specified to contain text shall be read into
+the program "as-is" - while this shouldn't affect Antidote, it may
+affect some things which are beyond the control of the programmer (mainly 
+concerned with SMTP alerts). Note that, at this stage, text-based values 
+are not parsed to check validity.
+
+
+Most users will only need to change the email server, recipient and possibly
+the sender email address for full functionality.
+
+The following options are currently supported:
+
+EthernetDevice = [device]
+ - Specifies the ethernet device to use. Give the device name as it appears
+in /dev.  (eg. Linux users would use eth0, eth1 etc). 
+
+Defaults to the first available non-loopback device.
+
+
+EmailSender = [address]
+ - Specifies the email address you want Antidote to use as the sender in email 
+messages. This is intended to make it easy for users to file email from 
+Antidote automatically.
+
+Defaults to antidote@localhost
+
+
+EmailRecipient = [address]
+ - Specifies the email address Antidote should send alert emails to. 
+The address can be left blank, in which case SMTP alerts will be disabled.
+
+Defaults to root@localhost
+
+
+EmailServer = [hostname]
+ - Specifies the mail server to send SMTP alerts through.  If this is left blank,
+SMTP alerts will be disabled.
+
+Defaults to localhost
+
+
+EmailServerPort = [port]
+ - Specifies the port the mail server is listening for SMTP connections on.
+
+Defaults to 25.
+
+
+Promiscuous = [yes|no]
+ - Specifies whether or not Antidote will put the Ethernet interface into 
+promiscuous mode. Note that the Ethernet interface may already be in 
+promiscuous mode, and antidote has no means to detect this. For more information,
+see the libpcap documentation ("man pcap").
+
+Defaults to yes.
+
+
+CheckMacChanges = [yes|no]
+ - Specifies whether or not to check for changes in IP:MAC address mappings.
+Change this to "no" if your network assigns IP addresses via DHCP (or some other
+autmated mechanism, such as bootp or rarp) and the IP:MAC mappings are not
+fixed at the DHCP server.
+
+Defaults to yes.
+
+
+PoisonThreshold = [threshold]
+ - If there are more ARP replies sent than there were requests, an alert will 
+be sent. 
+
+This option defines how many more replies there must be before sending an alert.
+Setting it to a very small value is probably a bad idea, as network conditions on
+even a relatively small network can cause packets to be lost, and you may find 
+yourself inundated in false alarms.
+
+Defaults to 10.
+
+
+BadNetThreshold = [threshold]
+ - If there are more ARP requests than there are replies, an alert will be sent.
+Such behaviour *may* indicate tampering on the network (eg. a DOS attack),
+however, it is more likely that it is just down to poor network conditions. 
+
+If a machine is so busy it never has time to send ARP replies, chances are you'll 
+hear about it from users complaining about poor performance almost as soon as 
+you hear about it from antidote. (and if the machine is the mail server, 
+you'll probably never hear from Antidote!)
+
+Defaults to 10.
+
+
+Timeout = [timeout]
+ - Time in minutes to keep hold of details matching IP to MAC, and number of ARP 
+replies/requests sent. 
+
+Defaults to 30 minutes.
+
+
+ - James Cort, antidote@whitepost.org.uk

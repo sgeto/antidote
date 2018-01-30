@@ -1,0 +1,44 @@
+INSTALLATION INSTRUCTIONS FOR ANTIDOTE
+======================================
+
+Antidote is an ARP-poison detector tool. To run it, you must be root (or the program must be
+setuid root, however, this is not recommended) as it requires direct access to 
+the ethernet hardware.
+
+You need libpcap > 0.5 to use this program.
+
+First, uncompress the tarball...
+
+gunzip -c antidote-[version number].tar.gz | tar xvf -
+
+(or tar zxvf antidote-[version number].tar.gz if you have GNU tar)
+
+Then, compile and install the program:
+
+cd antidote-[version number]
+./configure
+make
+make install
+
+For configuration options, type "./configure --help".
+
+The next thing you probably want to do is to create an options file. Antidote
+has some sensible defaults configured in antidote.h, however, these will not 
+suit everyone, and should be changed using a configuration file.
+
+By default, antidote expects to find a configuration file called antidote.cfg in /etc. 
+You can change the default by changing:
+
+#define OPTSFILE "/etc/antidote.cfg"
+
+to:
+
+#define OPTSFILE "<filename>"
+
+in src/antidote.h
+
+Alternatively, you can specify a configuration file at runtime by running 
+antidote with the -f option.
+
+
+  - James Cort, antidote@whitepost.org.uk
